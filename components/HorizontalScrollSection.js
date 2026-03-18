@@ -10,8 +10,16 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
   const stickyRef = useRef(null);
   const trackRef = useRef(null);
   const [scrollLen, setScrollLen] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useLayoutEffect(() => {
+    const mobileMq = typeof window !== "undefined" ? window.matchMedia?.("(max-width: 720px)") : null;
+    const computeIsMobile = () => setIsMobile(Boolean(mobileMq?.matches));
+    computeIsMobile();
+    // Safari/iOS uses addListener/removeListener
+    if (mobileMq?.addEventListener) mobileMq.addEventListener("change", computeIsMobile);
+    else mobileMq?.addListener?.(computeIsMobile);
+
     const reduceMotion =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
@@ -21,18 +29,26 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
     const track = trackRef.current;
     if (!section || !sticky || !track) return undefined;
 
-    if (reduceMotion) {
+    const killExisting = () => {
+      ScrollTrigger.getAll()
+        .filter((t) => t?.vars?.trigger === section || t?.vars?.pin === sticky)
+        .forEach((t) => t.kill());
+    };
+
+    if (reduceMotion || mobileMq?.matches) {
       setScrollLen(0);
-      gsap.set(track, { clearProps: "x" });
-      return undefined;
+      killExisting();
+      gsap.set(track, { x: 0, clearProps: "transform" });
+      return () => {
+        if (mobileMq?.removeEventListener) mobileMq.removeEventListener("change", computeIsMobile);
+        else mobileMq?.removeListener?.(computeIsMobile);
+      };
     }
 
     let tl;
 
     const setup = () => {
-      ScrollTrigger.getAll()
-        .filter((t) => t?.vars?.trigger === section || t?.vars?.pin === sticky)
-        .forEach((t) => t.kill());
+      killExisting();
       tl?.kill();
 
       const viewportWidth = sticky.clientWidth;
@@ -68,14 +84,22 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
     setup();
     window.addEventListener("resize", setup);
 
+    // Images can change card sizes after initial measure (esp. in production).
+    const imgs = Array.from(track.querySelectorAll("img"));
+    const onImgLoad = () => setup();
+    imgs.forEach((img) => {
+      if (!img.complete) img.addEventListener("load", onImgLoad, { once: true });
+    });
+
     return () => {
       window.removeEventListener("resize", setup);
-      ScrollTrigger.getAll()
-        .filter((t) => t?.vars?.trigger === section || t?.vars?.pin === sticky)
-        .forEach((t) => t.kill());
+      if (mobileMq?.removeEventListener) mobileMq.removeEventListener("change", computeIsMobile);
+      else mobileMq?.removeListener?.(computeIsMobile);
+      imgs.forEach((img) => img.removeEventListener("load", onImgLoad));
+      killExisting();
       tl?.kill();
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <section
@@ -84,20 +108,17 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
       className="section section--panel section--horizontal"
       style={{ ["--horizontalScrollLength"]: `${scrollLen}px` }}
     >
-      <div
-        className="horizontal-sticky"
-        ref={stickyRef}
-      >
+      <div className={isMobile ? "horizontal-sticky horizontal-sticky--mobile" : "horizontal-sticky"} ref={stickyRef}>
         <div className="section-header">
           <div>
             <p className="section-kicker">{kicker}</p>
             <h2 className="section-title">{title}</h2>
           </div>
-          <p className="section-subtitle">Scroll to explore →</p>
+          <p className="section-subtitle">{isMobile ? "Swipe to explore →" : "Scroll to explore →"}</p>
         </div>
 
         <div
-          className="horizontal-track"
+          className={isMobile ? "horizontal-track horizontal-track--mobile" : "horizontal-track"}
           ref={trackRef}
           tabIndex={0}
           aria-label="Project cards (horizontal rail)"

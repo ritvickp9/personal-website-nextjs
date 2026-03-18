@@ -667,6 +667,38 @@ html.lenis {
   outline: none;
 }
 
+.horizontal-sticky--mobile {
+  height: auto;
+  padding-top: 1.1rem;
+  padding-bottom: 1.2rem;
+  overflow: visible;
+}
+
+.horizontal-track--mobile {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.2rem;
+  padding-inline: 0.2rem;
+}
+
+.horizontal-track--mobile > * {
+  scroll-snap-align: center;
+}
+
+@media (max-width: 720px) {
+  .section--horizontal {
+    height: auto;
+  }
+
+  .project-card {
+    flex: 0 0 92%;
+    min-width: 92%;
+    max-width: 92%;
+  }
+}
+
 .card-glass {
   position: relative;
   padding: 1.4rem 1.3rem;
@@ -1156,6 +1188,20 @@ html.lenis {
   }
 }
 
+@media (max-width: 720px) {
+  .exp-beam-section {
+    padding: 1.4rem 0 0.4rem;
+  }
+
+  .exp-items {
+    gap: 1.1rem;
+  }
+
+  .exp-card {
+    max-width: none;
+  }
+}
+
 .parallax-shell {
   position: relative;
   overflow: hidden;
@@ -1257,6 +1303,100 @@ html.lenis {
 @media (max-width: 720px) {
   .nav-links {
     display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .nav-glass {
+    width: min(96vw, 560px);
+    height: 46px;
+    padding: 0.18rem 0.4rem;
+  }
+
+  .pill-cta {
+    padding: 0.28rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .section {
+    padding: 3.8rem 5.6vw 3.2rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .section-title {
+    font-size: 1.45rem;
+    line-height: 1.15;
+  }
+
+  .section-subtitle {
+    max-width: none;
+    font-size: 0.95rem;
+  }
+
+  .hero {
+    padding: calc(var(--navH) + 1.6rem) 5.6vw 2.6rem;
+  }
+
+  .hero-stage {
+    min-height: min(520px, 72vh);
+  }
+
+  .hero-title {
+    font-size: clamp(2.4rem, 9.2vw, 3.35rem);
+    margin: 0.95rem 0 0.55rem;
+    -webkit-line-clamp: 4;
+  }
+
+  .hero-subtitle {
+    font-size: 0.98rem;
+  }
+
+  .hero-avatar-img {
+    width: min(300px, 72vw);
+    transform: translateY(10px);
+  }
+
+  .hero-copy {
+    bottom: 6%;
+    width: 100%;
+    padding-inline: 0.2rem;
+  }
+
+  .hero-ctas {
+    gap: 0.7rem;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    padding: 0.62rem 1.1rem;
+  }
+
+  .card-glass {
+    padding: 1.15rem 1.05rem;
+    border-radius: 1.2rem;
+  }
+
+  .project-card-body {
+    flex-direction: column;
+  }
+
+  .project-card-media {
+    order: -1;
+  }
+
+  .project-thumb {
+    height: 220px;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
   }
 }
 
