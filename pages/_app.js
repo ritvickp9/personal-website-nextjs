@@ -22,13 +22,6 @@ export default function App({ Component, pageProps }) {
 
     lenisRef.current = lenis;
 
-    let rafId = 0;
-    const raf = (time) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
-
     let cleanupScrollTrigger = null;
     (async () => {
       try {
@@ -67,7 +60,6 @@ export default function App({ Component, pageProps }) {
     })();
 
     return () => {
-      cancelAnimationFrame(rafId);
       cleanupScrollTrigger?.();
       lenis.destroy();
       lenisRef.current = null;
