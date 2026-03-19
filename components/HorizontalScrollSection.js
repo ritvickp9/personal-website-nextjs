@@ -45,28 +45,33 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
       };
     }
 
-    let tl;
+    let tween;
+    let trigger;
 
     const setup = () => {
       killExisting();
-      tl?.kill();
+      tween?.kill();
+      trigger?.kill();
 
       const viewportWidth = sticky.clientWidth;
       const contentWidth = track.scrollWidth;
       const maxX = Math.max(0, contentWidth - viewportWidth);
-      setScrollLen(maxX);
 
       gsap.set(track, { x: 0 });
 
-      if (maxX <= 1) return;
+      if (maxX <= 1) {
+        setScrollLen(0);
+        return;
+      }
 
       const navH = Number.parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue("--navH")
       );
       const startOffset = Number.isFinite(navH) ? navH : 0;
 
-      tl = gsap.timeline({
-        scrollTrigger: {
+      try {
+        tween = gsap.to(track, { x: -maxX, ease: "none", paused: true });
+        trigger = ScrollTrigger.create({
           trigger: section,
           start: `top top+=${startOffset}`,
           end: `+=${maxX}`,
@@ -74,10 +79,17 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
           pin: sticky,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-        },
-      });
+          animation: tween,
+        });
+        setScrollLen(maxX);
+      } catch {
+        // If ScrollTrigger isn't available in this runtime, fail gracefully.
+        tween?.kill();
+        trigger?.kill();
+        setScrollLen(0);
+        gsap.set(track, { x: 0 });
+      }
 
-      tl.to(track, { x: -maxX, ease: "none" }, 0);
       requestAnimationFrame(() => ScrollTrigger.refresh());
     };
 
@@ -97,7 +109,8 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
       else mobileMq?.removeListener?.(computeIsMobile);
       imgs.forEach((img) => img.removeEventListener("load", onImgLoad));
       killExisting();
-      tl?.kill();
+      tween?.kill();
+      trigger?.kill();
     };
   }, [isMobile]);
 
