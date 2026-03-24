@@ -17,6 +17,25 @@ import { ExperienceBeam } from "../components/ExperienceBeam";
 
 const projects = [
   {
+    title: "rider-life",
+    displayTitle: "Rider Life",
+    description:
+      "A Next.js powered site celebrating bikes and long rides, built to practice file‑based routing and deployment.",
+    href: "https://rider-life-nextjs.vercel.app/",
+    badge: "Next.js",
+    external: true,
+    image: "/images/rider-life.jpg",
+  },
+  {
+    title: "Weather",
+    displayTitle: "Weather App",
+    description:
+      "A simple forecast app that taught me about API integration, error states and loading skeletons.",
+    href: "/projects/Weather/index.html",
+    badge: "APIs",
+    image: "/images/Weather.PNG",
+  },
+  {
     title: "Dice",
     displayTitle: "Dice Challenge",
     description:
@@ -42,34 +61,6 @@ const projects = [
     href: "/projects/Simon Game/index.html",
     badge: "Memory",
     image: "/images/Simon.PNG",
-  },
-  {
-    title: "Tindog",
-    displayTitle: "TinDog",
-    description:
-      "A playful landing page parody where I refined layout, typography and responsive breakpoints.",
-    href: "/projects/TinDog-Start-master/index.html",
-    badge: "UI parody",
-    image: "/images/Tindog.PNG",
-  },
-  {
-    title: "Weather",
-    displayTitle: "Weather App",
-    description:
-      "A simple forecast app that taught me about API integration, error states and loading skeletons.",
-    href: "/projects/Weather/index.html",
-    badge: "APIs",
-    image: "/images/Weather.PNG",
-  },
-  {
-    title: "rider-life",
-    displayTitle: "Rider Life",
-    description:
-      "A Next.js powered site celebrating bikes and long rides, built to practice file‑based routing and deployment.",
-    href: "https://rider-life-nextjs.vercel.app/",
-    badge: "Next.js",
-    external: true,
-    image: "/images/rider-life.jpg",
   },
 ];
 
@@ -262,9 +253,9 @@ export default function Home() {
           </nav>
 
           <a
-            href="/RITVICK PANT_WEB DEV.pdf"
+            href="/RITVICK_PANT_SDE_Resume.pdf"
             className="pill-cta"
-            download="RITVICK PANT_WEB DEV.pdf"
+            download="RITVICK_PANT_SDE_Resume.pdf"
           >
             Download CV
           </a>

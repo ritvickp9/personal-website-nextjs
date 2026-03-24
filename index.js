@@ -77,8 +77,8 @@ export default function Home() {
               <li className="nav-item">
                 <a
                   className="nav-link"
-                  href="/RITVICK PANT_WEB DEV.pdf"
-                  download="RITVICK PANT_WEB DEV.pdf"
+                  href="/RITVICK_PANT_SDE_Resume.pdf"
+                  download="RITVICK_PANT_SDE_Resume.pdf"
                 >
                   CV-Download
                 </a>
