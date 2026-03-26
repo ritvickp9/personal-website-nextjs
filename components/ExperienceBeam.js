@@ -56,7 +56,7 @@ export function ExperienceBeam({ items }) {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 70%", "end 30%"],
+    offset: ["start 85%", "end 60%"],
   });
 
   const glowY = useTransform(scrollYProgress, [0, 1], [0, travelPx]);

@@ -2,15 +2,20 @@ import Head from "next/head";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
-  SiAngular,
   SiBootstrap,
   SiCss,
-  SiExpress,
   SiHtml5,
   SiJavascript,
   SiNextdotjs,
   SiNodedotjs,
   SiReact,
+  SiTailwindcss,
+  SiPython,
+  SiMongodb,
+  SiPostgresql,
+  SiAngular,
+  SiFastapi,
+  SiFirebase,
 } from "react-icons/si";
 import { HorizontalScrollSection } from "../components/HorizontalScrollSection";
 import { ExperienceBeam } from "../components/ExperienceBeam";
@@ -65,59 +70,49 @@ const projects = [
 ];
 
 const skills = [
-  "HTML",
-  "CSS",
-  "Bootstrap",
   "JavaScript",
   "React",
   "Next.js",
   "Node.js",
-  "Express",
+  "Tailwind",
+  "Python",
+  "PostgreSQL",
+  "MongoDB",
   "Angular",
+  "FastAPI",
+  "Firebase",
+  "Superset",
 ];
 
 const skillIcons = {
-  HTML: SiHtml5,
-  CSS: SiCss,
-  Bootstrap: SiBootstrap,
   JavaScript: SiJavascript,
   React: SiReact,
   "Next.js": SiNextdotjs,
   "Node.js": SiNodedotjs,
-  Express: SiExpress,
+  Tailwind: SiTailwindcss,
+  Python: SiPython,
+  PostgreSQL: SiPostgresql,
+  MongoDB: SiMongodb,
   Angular: SiAngular,
+  FastAPI: SiFastapi,
+  Firebase: SiFirebase,
 };
 
 const experiences = [
   {
     period: "September 2025 - Present · Ease My Expo",
-    role: "Tech Lead",
-    description:
-      "Leading the team, building our main web app from scratch using React and Node.js. Maintained and built new features for the Angular + Spring Boot dashboard and created multiple dashboards with tools like Flask and React.",
+    role: "Technology Lead",
+    description: "Managing a cross-functional team to build & scale four core products. Built 'Communities', a serverless LinkedIn for Exhibitions. Built a GenAI prototype tool reducing design lead time from days to seconds.",
   },
   {
-    period: "April 2025 – September 2025 · Elikem (Nokia IT)",
+    period: "April 2025 – September 2025 · Nokia",
     role: "Sr. Frontend Developer",
-    description:
-      "Leading the team, building our main web app from scratch using React and Node.js. Maintained and built new features for the Angular + Spring Boot dashboard and created multiple dashboards with tools like Flask and React.",
+    description: "Led migration and rebuild of the main telecom app to React & Node.js. Optimized existing Angular app by restructuring change detection strategies, reducing lag on complex tables by 50%.",
   },
   {
-    period: "Aug 2023 – April 2025 · Elikem (Nokia IT)",
+    period: "Aug 2023 – April 2025 · Nokia",
     role: "Frontend Developer",
-    description:
-      "Leading the team, building our main web app from scratch using React and Node.js. Maintained and built new features for the Angular + Spring Boot dashboard and created multiple dashboards with tools like Flask and React.",
-  },
-  {
-    period: "Feb 2021 – Apr 2021 · Lido Learning",
-    role: "Business Development Associate",
-    description:
-      "First to clear the on-ground training phase on the first day itself with the highest package sold — an intense crash course in understanding people, communication and trust.",
-  },
-  {
-    period: "Jun 2018 · CNH Industrials",
-    role: "R&D Operations Bay Summer Intern",
-    description:
-      "Created a practical checklist for evaluating engineering drawings that helped seniors review their work before formal evaluation — small process improvements with a big impact on quality.",
+    description: "Maintained Angular+Springboot web application, improving data processing efficiency by 75%. Built Geolytics for cell tower KPI analysis, improving turnaround by 67%.",
   },
 ];
 
@@ -175,25 +170,37 @@ export default function Home() {
   const bgParallaxC = useTransform(scrollYProgress, [0, 1], [0, -160]);
 
   useEffect(() => {
-    const ids = SECTION_IDS.map((id) => `section-${id}`);
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter(Boolean);
-    if (!elements.length) return;
+    const handleScroll = () => {
+      let currentActive = "hero";
+      let minDistance = Infinity;
+      const scrollY = window.scrollY;
+      const halfWindow = window.innerHeight / 2;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
-        if (!visible?.target?.id) return;
-        setActiveSection(visible.target.id.replace("section-", ""));
-      },
-      { threshold: [0.35, 0.5, 0.65] }
-    );
+      SECTION_IDS.forEach((id) => {
+        const el = document.getElementById(`section-${id}`);
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        
+        // If the center of the viewport is within the element's bounds, it's definitively active
+        if (rect.top <= halfWindow && rect.bottom >= halfWindow) {
+          currentActive = id;
+          minDistance = 0; // Lock it in
+        } else if (minDistance !== 0) {
+          // Fallback: finding the closest element to the center
+          const distance = Math.min(Math.abs(rect.top - halfWindow), Math.abs(rect.bottom - halfWindow));
+          if (distance < minDistance) {
+            minDistance = distance;
+            currentActive = id;
+          }
+        }
+      });
 
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+      setActiveSection(currentActive);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Init
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToSection = (id) => {
@@ -214,7 +221,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Ritvick Pant · Frontend Engineer</title>
+        <title>Ritvick Pant · Full Stack Developer</title>
       </Head>
 
       <div ref={shellRef} className="app-shell">
@@ -233,8 +240,8 @@ export default function Home() {
             <div className="nav-badge">RP</div>
             <div className="nav-meta">
               <div style={{ fontSize: "0.9rem", fontWeight: 600 }}>Ritvick Pant</div>
-              <div style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
-                Frontend Engineer
+              <div style={{ fontSize: "0.75rem", color: "var(--muted)", fontWeight: 500 }}>
+                Full Stack Developer
               </div>
             </div>
           </div>
@@ -296,8 +303,8 @@ export default function Home() {
 
             <div className="hero-copy">
               <h1 className="hero-title">
-                I&apos;m <span>Ritvick</span>, an engineer who loves{" "}
-                <span>delightful interfaces</span>.
+                I&apos;m <span>Ritvick</span>, a Full Stack Developer{" "}
+                building <span>high-scale architecture</span>.
               </h1>
             </div>
           </div>
@@ -311,14 +318,8 @@ export default function Home() {
               <h2 className="section-title">A calm builder with a bias for UX.</h2>
             </div>
             <p className="section-subtitle">
-              Tech lead focused on shipping reliable products (and building AI features that stay usable in the real world).
+              Full Stack Developer with a background in high-scale telecom (Nokia) and agile startup leadership. Specialized in shipping AI-integrated features from MVP to production.
             </p>
-          </div>
-
-          <div className="about-summary" aria-hidden="true">
-            <span className="about-chip">Tech Leadership</span>
-            <span className="about-chip">AI Product Delivery</span>
-            <span className="about-chip">Pragmatic Engineering</span>
           </div>
 
           <div className="about-grid">
@@ -407,43 +408,33 @@ export default function Home() {
         <HorizontalScrollSection
           id="section-projects"
           kicker="Projects"
-          title="Personal projects that helped me practice the frontend stack."
+          title="Personal projects that helped me practice."
         >
           {projects.map((project) => (
-            <article key={project.href} className="card-glass project-card">
-              <div className="hcard-top">
-                <div>
-                  <p className="card-pill">{project.badge}</p>
-                  <h3 className="hcard-title">{project.displayTitle ?? project.title}</h3>
-                </div>
-                <div className="hcard-actions">
+            <article key={project.href} className="glass-hover-card">
+              {project.image && (
+                <img
+                  src={project.image}
+                  alt={project.displayTitle ?? project.title}
+                  className="ghc-bg-image"
+                />
+              )}
+              <div className="ghc-glass-pane">
+                <div className="ghc-pane-top">
+                  <p className="ghc-badge">{project.badge}</p>
                   <a
-                    className="btn-small"
+                    className="ghc-cta"
                     href={project.href}
                     target={project.external ? "_blank" : "_self"}
                     rel={project.external ? "noreferrer" : undefined}
                   >
-                    {project.external ? "Visit" : "Open"}
+                    {project.external ? "Visit" : "Open"} ↗
                   </a>
                 </div>
-              </div>
-              <div className="project-card-body">
-                <div className="project-card-text">
-                  <p className="card-body">{project.description}</p>
-                  <ul className="project-points">
-                    <li>Built with vanilla JS, HTML and CSS.</li>
-                    <li>Focus on core frontend skills: layout, state and interaction.</li>
-                  </ul>
+                <div>
+                  <h3 className="ghc-title">{project.displayTitle ?? project.title}</h3>
+                  <p className="ghc-desc">{project.description}</p>
                 </div>
-                {project.image && (
-                  <div className="project-card-media">
-                    <img
-                      src={project.image}
-                      alt={project.displayTitle ?? project.title}
-                      className="project-thumb"
-                    />
-                  </div>
-                )}
               </div>
             </article>
           ))}
@@ -507,7 +498,7 @@ export default function Home() {
                 Have an idea, a role, or a project in mind? Send me a short note and
                 I&apos;ll get back to you.
               </p>
-              <a href="mailto:ritvickp9@gmail.com" className="card-badge">
+              <a href="mailto:ritvickp9@gmail.com" className="pill-cta" style={{ marginTop: "1rem" }}>
                 Email me
               </a>
             </article>
@@ -519,22 +510,24 @@ export default function Home() {
                 I share experiments, code sketches and occasional thoughts on frontend
                 craft.
               </p>
-              <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.85rem" }}>
+              <div style={{ display: "flex", gap: "1rem", marginTop: "1.25rem" }}>
                 <a
                   href="https://www.linkedin.com/in/ritvick-pant/"
                   target="_blank"
                   rel="noreferrer"
                   className="footer-link"
+                  aria-label="LinkedIn"
                 >
-                  LinkedIn
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                 </a>
                 <a
                   href="https://github.com/ritvickp9"
                   target="_blank"
                   rel="noreferrer"
                   className="footer-link"
+                  aria-label="GitHub"
                 >
-                  GitHub
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                 </a>
               </div>
             </article>

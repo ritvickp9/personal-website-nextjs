@@ -55,7 +55,9 @@ export function HorizontalScrollSection({ id, title, kicker, children }) {
 
       const viewportWidth = sticky.clientWidth;
       const contentWidth = track.scrollWidth;
-      const maxX = Math.max(0, contentWidth - viewportWidth);
+      // Add extra buffer to ensure the last card comfortably reaches the center/left before unpinning
+      const marginBuffer = window.innerWidth * 0.15;
+      const maxX = Math.max(0, contentWidth - viewportWidth + marginBuffer);
 
       gsap.set(track, { x: 0 });
 
